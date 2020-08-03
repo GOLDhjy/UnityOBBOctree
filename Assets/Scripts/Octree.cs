@@ -18,5 +18,39 @@ namespace MyOBBOctree
             Bounds bounds = new Bounds(center, new Vector3(length, length, length));
             root = new OctreeNode<T>(bounds,0);
         }
+        public bool AddNode(T collider)
+        {
+            throw new NotImplementedException();
+        }
+        public bool RemoveNode(T collider)
+        {
+            throw new NotImplementedException();
+
+        }
+        public bool RemoveNode(uint id)
+        {
+            throw new NotImplementedException();
+        }
+        public bool ContainPoint(Vector3 point)
+        {
+            throw new NotImplementedException();
+        }
+        public void DrawBounds()
+        {
+
+        }
+        public void DrawObjects()
+        {
+
+        }
+        public void DebugLog()
+        {
+
+        }
+
+        public void Destroy()
+        {
+            root.Clear();
+        }
     }
 }

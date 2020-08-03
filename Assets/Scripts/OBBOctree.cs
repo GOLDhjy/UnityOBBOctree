@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using UnityEngine;
 namespace MyOBBOctree
 {
-    public class OBBOctree : IOBB
+    public class OBBOctree : Octree<BoxCollider>, IOBB
     {
-        public bool OBBCheckBox(BoxCollider collider)
+        public OBBOctree(Bounds bounds) : base(bounds)
+        {
+        }
+
+        public OBBOctree(Vector3 center, float length) : base(center, length)
+        {
+        }
+
+        public bool BoxCast(BoxCollider collider)
         {
             throw new NotImplementedException();
         }
 
-        public bool OBBCheckBox(BoxCollider collider, int layer)
+        public bool BoxCast(BoxCollider collider, int layer)
         {
             throw new NotImplementedException();
         }

@@ -53,7 +53,11 @@ namespace MyOBBOctree
 
         public override string ToString()
         {
-            return string.Format("ID {0}",instanceID);
+            return string.Format("ID: {0}",instanceID);
+        }
+        public virtual void Destroy()
+        {
+            throw new NotImplementedException();
         }
         public abstract bool Intersects(BaseCollider baseCollider);
         public abstract Vector3 GetPosition();
