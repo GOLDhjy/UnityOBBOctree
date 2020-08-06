@@ -59,7 +59,12 @@ namespace MyOBBOctree
         }
         public bool Contains(Vector3 point)
         {
-            throw new NotImplementedException();
+            if (point.x < Min.x || point.y < Min.y || point.z < Min.z ||
+                point.x > Max.x || point.y > Max.y || point.z > Max.z)
+            {
+                return false;
+            }
+            return true;
         }
         public void Encapsulate(Vector3 point)
         {

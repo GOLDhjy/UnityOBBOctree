@@ -127,48 +127,202 @@ namespace MyOBBOctree
         }
         public bool Remove(T collider)
         {
-            throw new NotImplementedException();
-
+            bool removed = false;
+            for (int i = 0; i < objects.Count; i++)
+            {
+                if (objects[i].Equals(collider))
+                {
+                    removed = true;
+                    objects.RemoveAt(i);
+                    break;
+                }
+            }
+            if (!removed && childs!=null)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    removed = childs[i].Remove(collider);
+                    if (removed) break;
+                }
+            }
+            return removed;
         }
         public bool Remove(uint insId)
         {
-            throw new NotImplementedException();
-
+            bool removed = false;
+            for (int i = 0; i < objects.Count; i++)
+            {
+                if (objects[i].InstanceID == insId)
+                {
+                    removed = true;
+                    objects.RemoveAt(i);
+                    break;
+                }
+            }
+            if (!removed && childs != null)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    removed = childs[i].Remove(insId);
+                    if (removed) break;
+                }
+            }
+            return removed;
         }
         public void OverlapColliders(T collider, List<T> list, int layer)
         {
-
+            if (!Encapsulates(collider))
+            {
+                return;
+            }
+            foreach (var item in objects)
+            {
+                if ((item.Layer & layer) != 0 && collider.Intersects(item))
+                {
+                    list.Add(item);
+                }
+            }
+            if (childs == null)
+            {
+                return;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                childs[i].OverlapColliders(collider, list, layer);
+            }
         }
         public void OverlapColliders(T collider, List<T> list)
         {
-
+            if (!Encapsulates(collider))
+            {
+                return;
+            }
+            foreach (var item in objects)
+            {
+                if (collider.Intersects(item))
+                {
+                    list.Add(item);
+                }
+            }
+            if (childs == null)
+            {
+                return;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                childs[i].OverlapColliders(collider, list);
+            }
         }
         public bool Check(T collider, int layer = -1)
         {
-            throw new NotImplementedException();
-
+            if (!Encapsulates(collider))
+            {
+                return false;
+            }
+            if (layer == -1)
+            {
+                foreach (var item in objects)
+                {
+                    if (collider.Intersects(item))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in objects)
+                {
+                    if ((item.Layer & layer) != 0 && collider.Intersects(item))
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            if (childs == null)
+            {
+                return false;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                if (childs[i].Check(collider, layer))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public bool Encapsulates(T collider)
         {
-            throw new NotImplementedException();
-
+            float boundsExtents = length / 2;
+            if (collider.Min.x < bounds.Min.x || collider.Min.y < bounds.Min.y || collider.Min.z < bounds.Min.z ||
+                collider.Max.x > bounds.Max.x || collider.Max.y > bounds.Max.y || collider.Max.z > bounds.Max.z)
+            {
+                return false;
+            }
+            return true;
         }
 
         public void GetAllObjects(List<T> res)
         {
-
+            res.AddRange(objects);
+            if (childs != null)
+            {
+                foreach (var item in childs)
+                {
+                    item.GetAllObjects(res);
+                }
+            }
         }
         public void DrawBounds()
         {
-
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(bounds.Center, bounds.Size);
+            if (childs!=null)
+            {
+                foreach (var item in childs)
+                {
+                    item.DrawBounds();
+                }
+            }
         }
         public void DrawObjects()
         {
-
+            var cacheColor = Gizmos.color;
+            var cacheMatrix = Gizmos.matrix;
+            Gizmos.color = Color.red;
+            foreach (var item in objects)
+            {
+                Gizmos.matrix = item.Transform.localToWorldMatrix;
+                Gizmos.DrawCube(item.Bounds.Center, item.Bounds.Size);
+            }
+            Gizmos.matrix = cacheMatrix;
+            Gizmos.color = cacheColor;
+            if (childs!=null)
+            {
+                foreach (var item in childs)
+                {
+                    item.DrawObjects();
+                }
+            }
         }
         public void DebugLog()
         {
-
+            Debug.Log($"深度:{deep} ================================= ");
+            foreach (var item in objects)
+            {
+                Debug.Log($"ID:{item.InstanceID} 位置:{item.GetPosition()}");
+            }
+            if (childs == null)
+            {
+                return;
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                Debug.Log($"深度{deep}的子节点-{i}");
+                childs[i].DebugLog();
+            }
         }
     }
 }

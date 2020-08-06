@@ -20,32 +20,37 @@ namespace MyOBBOctree
         }
         public bool AddNode(T collider)
         {
-            throw new NotImplementedException();
+            if (!root.Encapsulates(collider))
+            {
+                Debug.LogError($"此节点超过八叉树范围，添加失败{collider.InstanceID}");
+                return false;
+            }
+            return root.Add(collider);
         }
         public bool RemoveNode(T collider)
         {
-            throw new NotImplementedException();
+            return root.Remove(collider);
 
         }
         public bool RemoveNode(uint id)
         {
-            throw new NotImplementedException();
+            return root.Remove(id);
         }
         public bool ContainPoint(Vector3 point)
         {
-            throw new NotImplementedException();
+            return root.Bounds.Contains(point);
         }
         public void DrawBounds()
         {
-
+            root.DrawBounds();
         }
         public void DrawObjects()
         {
-
+            root.DrawObjects();
         }
         public void DebugLog()
         {
-
+            root.DebugLog();
         }
 
         public void Destroy()

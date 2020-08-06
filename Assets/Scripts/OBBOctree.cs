@@ -18,22 +18,24 @@ namespace MyOBBOctree
 
         public bool BoxCast(BoxCollider collider)
         {
-            throw new NotImplementedException();
+            return root.Check(collider);
         }
 
         public bool BoxCast(BoxCollider collider, int layer)
         {
-            throw new NotImplementedException();
+            return root.Check(collider, layer);
         }
 
         public void OverlapBox(BoxCollider collider, out List<BoxCollider> colliders)
         {
-            throw new NotImplementedException();
+            colliders = new List<BoxCollider>();
+            root.OverlapColliders(collider, colliders);
         }
 
         public void OverlapBox(BoxCollider collider, out List<BoxCollider> colliders, int layer)
         {
-            throw new NotImplementedException();
+            colliders = new List<BoxCollider>();
+            root.OverlapColliders(collider, colliders,layer);
         }
     }
 }
